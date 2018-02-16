@@ -5,8 +5,8 @@ This problem provides practice at:
   ***  LOOPS WITHIN LOOPS in 2D GRAPHICS problems.  ***
 
 Authors: David Mutchler, Valerie Galluzzi, Mark Hays, Amanda Stouder,
-         their colleagues and PUT_YOUR_NAME_HERE.
-"""  # TODO: 1. PUT YOUR NAME IN THE ABOVE LINE.
+         their colleagues and Youhua Lu.
+"""  # done: 1. PUT YOUR NAME IN THE ABOVE LINE.
 
 ########################################################################
 # Students:
@@ -29,11 +29,11 @@ Authors: David Mutchler, Valerie Galluzzi, Mark Hays, Amanda Stouder,
 ########################################################################
 
 import rosegraphics as rg
-
+import math
 
 def main():
     """ Calls the   TEST   functions in this module. """
-    run_test_hourglass()
+    # run_test_hourglass()
     run_test_many_hourglasses()
 
 
@@ -89,7 +89,7 @@ def hourglass(window, n, point, radius, color):
     a color that rosegraphics understands.
     """
     # ------------------------------------------------------------------
-    # TODO: 2. Implement and test this function.
+    # done: 2. Implement and test this function.
     #       We provided some tests for you (above).
     # ------------------------------------------------------------------
     ####################################################################
@@ -101,6 +101,25 @@ def hourglass(window, n, point, radius, color):
     #    DIFFICULTY:      8
     #    TIME ESTIMATE:  25 minutes (warning: this problem is challenging)
     # ------------------------------------------------------------------
+    center = rg.Circle(point, radius)
+    center.attach_to(window)
+    center.fill_color = color
+    l = rg.Line(rg.Point(point.x-radius, point.y), rg.Point(point.x+radius, point.y))
+    l.attach_to(window)
+    for k in range(-n+1, n):
+        for j in range(1, abs(k)+1):
+            ps = rg.Point(point.x-radius*abs(k), point.y+math.sqrt(3)*k*radius)
+            c1 = rg.Circle(ps,radius)
+            c1.fill_color = color
+            c1.attach_to(window)
+            l = rg.Line(rg.Point(ps.x-radius,ps.y),rg.Point(ps.x+radius,ps.y))
+            l.attach_to(window)
+            c2 = rg.Circle(rg.Point(c1.center.x+2*radius*j, c1.center.y), radius)
+            c2.fill_color = color
+            c2.attach_to(window)
+            l2 = rg.Line(rg.Point(c2.center.x-radius, c2.center.y), rg.Point(c2.center.x+radius, c2.center.y))
+            l2.attach_to(window)
+    window.render()
 
 
 def run_test_many_hourglasses():
@@ -163,7 +182,7 @@ def many_hourglasses(window, square, m, colors):
     each of which denotes a color that rosegraphics understands.
     """
     # ------------------------------------------------------------------
-    # TODO: 3. Implement and test this function.
+    # done: 3. Implement and test this function.
     #       We provided some tests for you (above).
     # ------------------------------------------------------------------
     ####################################################################
@@ -179,6 +198,25 @@ def many_hourglasses(window, square, m, colors):
     #                         a correct "hourglass" function above)
     #    TIME ESTIMATE:  20 minutes (warning: this problem is challenging)
     # ------------------------------------------------------------------
+    radius = square.length_of_each_side/2
+    center = square.center
+    a = 0
+    hourglass(window, 1, center, radius, colors[a])
+    center2 = center
+    rx = rg.Rectangle(rg.Point(center.x-radius,center.y-radius),rg.Point(center.x+radius,center.y+radius))
+    rx.attach_to(window)
+    for k in range(m-1):
+        px = rg.Point(center2.x + (3+2*k)*radius,center.y)
+        center2.x = px.x
+        a = a + 1
+        if a == len(colors):
+            a = 0
+        hourglass(window,k+2,px,radius,colors[a])
+        p1 = rg.Point(center2.x-(k+2)*radius, center2.y-radius-(k+1)*radius*math.sqrt(3))
+        p2 = rg.Point(center2.x+(k+2)*radius, center2.y+radius+(k+1)*radius*math.sqrt(3))
+        r = rg.Rectangle(p1, p2)
+        r.attach_to(window)
+    window.render()
 
 
 # ----------------------------------------------------------------------
